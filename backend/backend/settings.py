@@ -60,6 +60,9 @@ INSTALLED_APPS = [
 
     # Handles sending emails through external providers like Resend
     'anymail',
+
+    # Register the newly created catalog app
+    'catalog',
 ]
 
 # The Middleware acts like a series of security bouncers standing in a hallway.
