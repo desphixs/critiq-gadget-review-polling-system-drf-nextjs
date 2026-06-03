@@ -25,5 +25,8 @@ urlpatterns = [
 
     # Route all API traffic starting with 'api/' to our 'userauths' application urls file.
     path('api/userauths/', include('userauths.urls')),
+
+    # Route all API traffic starting with 'api/catalog/' to our 'catalog' application urls file.
+    path('api/catalog/', include('catalog.urls')),
 ]
 
