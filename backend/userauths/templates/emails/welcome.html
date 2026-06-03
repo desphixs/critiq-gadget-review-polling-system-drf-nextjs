@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Staqed</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f9f9fb;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrapper {
+            width: 100%;
+            background-color: #f9f9fb;
+            padding: 40px 0;
+        }
+        .container {
+            max-width: 580px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #eef0f4;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+        }
+        .header {
+            padding: 40px 40px 20px 40px;
+            text-align: left;
+        }
+        .logo-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background-color: #09090b;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 44px;
+            text-align: center;
+            display: inline-block;
+        }
+        .content {
+            padding: 0 40px 40px 40px;
+        }
+        h1 {
+            color: #09090b;
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.25;
+            margin-top: 24px;
+            margin-bottom: 16px;
+            letter-spacing: -0.03em;
+        }
+        p {
+            color: #52525b;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+        .cta-container {
+            margin: 32px 0;
+        }
+        .btn-primary {
+            display: inline-block;
+            background-color: #09090b;
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(9, 9, 11, 0.15);
+            transition: background-color 0.2s ease;
+        }
+        .footer {
+            background-color: #fafafa;
+            border-top: 1px solid #f3f3f3;
+            padding: 24px 40px;
+            text-align: center;
+        }
+        .footer p {
+            color: #a1a1aa;
+            font-size: 12px;
+            margin: 0;
+        }
+        .highlight-box {
+            background-color: #f4f4f5;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .highlight-box h3 {
+            color: #09090b;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+        .highlight-box ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #52525b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .highlight-box li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <div class="logo-box">S</div>
+            </div>
+            <div class="content">
+                <h1>Hello, {{ name }}!</h1>
+                <p>Welcome to Staqed. We are absolutely thrilled to have you here!</p>
+                <p>Your full-stack workspace has been initialized successfully. You are now equipped with a industry-standard foundation featuring secure, token-based cross-origin authentication, dynamic theme systems, and highly isolated cookie storage.</p>
+                
+                <div class="highlight-box">
+                    <h3>What's Next inside Your Dashboard?</h3>
+                    <ul>
+                        <li>Manage your profile and custom preferences securely</li>
+                        <li>Explore server-first JWT session cookie safeguards</li>
+                        <li>Initialize two-factor verification structures</li>
+                    </ul>
+                </div>
+                
+                <div class="cta-container">
+                    <a href="{{ frontend_url }}" class="btn-primary" target="_blank">Access Your Dashboard</a>
+                </div>
+                
+                <p>If you have any questions or need technical guidance while exploring the blueprints, just reply directly to this email. We are here to support your engineering journey.</p>
+                <p>Best regards,<br>The Staqed Team</p>
+            </div>
+            <div class="footer">
+                <p>&copy; 2026 Staqed Projects. All rights reserved.</p>
+                <p style="margin-top: 4px; font-size: 11px;">You received this welcome email because you registered on our platform.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
