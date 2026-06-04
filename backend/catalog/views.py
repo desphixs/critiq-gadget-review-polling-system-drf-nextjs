@@ -183,3 +183,61 @@ class ReviewCreateView(APIView):
 
         # 6. Return a success response with an HTTP 201 Created status.
         return Response({'message': 'Review submitted successfully.'}, status=201)
+
+
+class ToggleUpvoteView(APIView):
+    """
+    TOGGLE UPVOTE VIEW
+    
+    Analogy:
+    Think of this class like a light switch or a classroom attendance toggle button.
+    When an authenticated student enters the room and clicks the switch:
+    - If the light was off (user has not upvoted this review yet), we flip it on (add them to the upvotes set).
+    - If the light was already on (user already upvoted this review), we flip it off (remove them from the upvotes set).
+    Finally, we count how many people have their lights on and report that number back to the room.
+    """
+    
+    # permission_classes: Enforce that only logged-in users can cast or retract helpful votes.
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, review_id):
+        """
+        Handles incoming HTTP POST requests to toggle the upvote status of a review.
+        """
+        # 1. Fetch the Review from the database.
+        # We query by id=review_id to find the target review card.
+        review = Review.objects.filter(id=review_id).first()
+        if review is None:
+            # If the review doesn't exist, return a 404 Not Found response.
+            return Response({'error': 'Review not found'}, status=404)
+
+        # 2. Get the requesting user who sent the API call.
+        user = request.user
+
+        # 3. Toggle logic: Check if the user has already upvoted this review.
+        # We check membership: is the user object inside our review's upvotes Many-to-Many set?
+        if user in review.upvotes.all():
+            # If the condition is True, the user already voted for it.
+            # So, we retract/remove their upvote from the Many-to-Many relationship.
+            review.upvotes.remove(user)
+            # Set the voted status flag to False since their vote is now removed.
+            voted = False
+        else:
+            # If the condition is False, the user hasn't voted for this review yet.
+            # So, we register/add their upvote to the Many-to-Many relationship.
+            review.upvotes.add(user)
+            # Set the voted status flag to True since their vote is now recorded.
+            voted = True
+
+        # 4. Count the new total number of upvotes for this review.
+        # .count() executes a fast SQL COUNT query at the database level.
+        new_count = review.upvotes.count()
+
+        # 5. Return the result dictionary back to the client with a 200 OK status.
+        # This payload tells the frontend exactly what visual state (voted: True/False) and
+        # what vote count (upvote_count) to display without needing to re-fetch the entire page.
+        return Response({
+            'voted': voted,
+            'upvote_count': new_count
+        }, status=200)
+

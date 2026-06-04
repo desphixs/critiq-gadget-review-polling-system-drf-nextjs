@@ -1,6 +1,6 @@
 from django.urls import path
 # Import the path function from django.urls to define URL routes.
-from .views import ItemListView, ReviewListView, ReviewCreateView
+from .views import ItemListView, ReviewListView, ReviewCreateView, ToggleUpvoteView
 # Import our view classes to link them to URL routes.
 
 # urlpatterns: A list mapping URL paths to view classes.
@@ -16,4 +16,8 @@ urlpatterns = [
     # path('items/<int:item_id>/reviews/create/', ...): Maps POST requests targeting 'api/catalog/items/<item_id>/reviews/create/'
     # to our ReviewCreateView. This captures the item ID and handles review submissions.
     path('items/<int:item_id>/reviews/create/', ReviewCreateView.as_view(), name='review-create'),
+    
+    # path('reviews/<int:review_id>/upvote/', ...): Maps POST requests targeting 'api/catalog/reviews/<int:review_id>/upvote/'
+    # to our ToggleUpvoteView. This handles toggling the user's upvote on a review.
+    path('reviews/<int:review_id>/upvote/', ToggleUpvoteView.as_view(), name='toggle-upvote'),
 ]
