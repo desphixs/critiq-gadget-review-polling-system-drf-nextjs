@@ -74,3 +74,26 @@ class ReviewSerializer(serializers.Serializer):
     
     author_avatar = serializers.CharField(required=False, allow_blank=True)
 
+
+class ReviewCreateSerializer(serializers.Serializer):
+    """
+    REVIEW CREATE SERIALIZER
+    
+    Analogy:
+    Think of this like an application form filled out by a visitor.
+    Before we let them submit their opinion, we check if they filled it out correctly:
+    - Did they give a rating score between 1 and 5?
+    - Did they write a long enough comment (at least 10 characters)?
+    Unlike the ReviewSerializer which translates database records for the browser,
+    this serializer's job is to inspect incoming data from the user and ensure it's safe and complete.
+    """
+    
+    # rating: The star rating value from 1 to 5.
+    # min_value=1 and max_value=5 enforce that they can't submit an invalid rating score.
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    
+    # body: The text of the review.
+    # min_length=10 ensures the reviewer writes a meaningful message instead of just a single letter.
+    body = serializers.CharField(min_length=10)
+
+

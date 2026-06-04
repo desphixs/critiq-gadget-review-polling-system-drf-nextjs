@@ -9,8 +9,8 @@ from django.db.models import Avg, Count
 
 from .models import Item, Review
 # Import our Item and Review models to query their database tables.
-from .serializers import ItemSerializer, ReviewSerializer
-# Import our ItemSerializer and ReviewSerializer to translate model data into JSON format.
+from .serializers import ItemSerializer, ReviewSerializer, ReviewCreateSerializer
+# Import our serializers to translate and validate model data formats.
 
 class ItemListView(APIView):
     """
@@ -128,3 +128,58 @@ class ReviewListView(APIView):
         # 5. Return the serialized data back to the client with an HTTP 200 OK status.
         return Response(serializer.data, status=200)
 
+
+class ReviewCreateView(APIView):
+    """
+    REVIEW CREATE VIEW
+    
+    Analogy:
+    Think of this class like a security guard at a feedback box.
+    When a customer tries to submit a comment card:
+    1. The guard checks if the product/item actually exists. If not, they reject the card (404 Not Found).
+    2. The guard checks a registry list to see if this customer has already written a comment card 
+       for this exact product. If they did, they reject the card to prevent spam (400 Bad Request).
+    3. The guard checks if the comment card's content is valid (has a star score of 1-5, and has a
+       review text that is long enough).
+    4. If all checks pass, the guard logs the comment in the database (201 Created).
+    """
+    
+    # permission_classes: Restricts access to authenticated users only.
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, item_id):
+        """
+        Handles incoming HTTP POST requests to submit a review for a specific item.
+        """
+        # 1. Verify that the target Item gadget actually exists in our database.
+        item = Item.objects.filter(id=item_id).first()
+        if item is None:
+            # Return an HTTP 404 response if the item cannot be found.
+            return Response({'error': 'Item not found'}, status=404)
+
+        # 2. Enforce the business rule: One review per user, per item.
+        # We query the database to check if a Review already exists with this item_id and author.
+        already_reviewed = Review.objects.filter(item_id=item_id, author=request.user).exists()
+        if already_reviewed:
+            # Return an HTTP 400 Bad Request response with a descriptive error message.
+            return Response({'error': 'You have already reviewed this item.'}, status=400)
+
+        # 3. Instantiate the serializer with the incoming JSON payload (request.data).
+        serializer = ReviewCreateSerializer(data=request.data)
+        
+        # 4. Run the validation checks (e.g. checking field lengths and range constraints).
+        # raise_exception=True will automatically halt execution and return a 400 Bad Request
+        # response with the validation error details if the client sends invalid inputs.
+        serializer.is_valid(raise_exception=True)
+
+        # 5. Insert the new Review record directly into the database.
+        # We access the safe, checked data from `serializer.validated_data`.
+        Review.objects.create(
+            item_id=item_id,
+            author=request.user,
+            rating=serializer.validated_data['rating'],
+            body=serializer.validated_data['body']
+        )
+
+        # 6. Return a success response with an HTTP 201 Created status.
+        return Response({'message': 'Review submitted successfully.'}, status=201)
