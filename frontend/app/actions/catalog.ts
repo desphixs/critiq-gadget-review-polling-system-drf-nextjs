@@ -142,3 +142,42 @@ export async function toggleUpvoteAction(reviewId: number) {
     }
 }
 
+/**
+ * FETCH USER REVIEWED ITEMS ACTION
+ * 
+ * Analogy:
+ * Think of this action like a private digital folder containing all comment cards
+ * a customer has filled out. It queries the backend reviewed-items API to retrieve
+ * only the gadgets that the logged-in user has personally written reviews for.
+ */
+export async function getUserReviewedItemsAction() {
+    try {
+        // Dispatch secure GET request to the Django catalog reviewed-items endpoint.
+        const { ok, data } = await apiFetch('/catalog/reviewed-items/', {
+            method: 'GET',
+            cache: 'no-store', // Always fetch fresh to guarantee accurate lists
+        });
+
+        if (ok) {
+            return {
+                success: true,
+                message: "Reviewed gadgets retrieved successfully.",
+                items: data,
+            };
+        } else {
+            return {
+                success: false,
+                message: data.message || data.detail || "Failed to retrieve reviewed gadgets.",
+                items: [],
+            };
+        }
+    } catch (error: any) {
+        return {
+            success: false,
+            message: `Network error: ${error.message || 'Failed to connect to backend server.'}`,
+            items: [],
+        };
+    }
+}
+
+

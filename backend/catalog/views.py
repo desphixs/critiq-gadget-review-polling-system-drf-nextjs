@@ -241,3 +241,36 @@ class ToggleUpvoteView(APIView):
             'upvote_count': new_count
         }, status=200)
 
+
+class UserReviewedItemsListView(APIView):
+    """
+    USER REVIEWED ITEMS LIST VIEW
+    
+    Analogy:
+    Think of this view like a customer's personal purchase history folder.
+    When the logged-in user loads their overview dashboard, this view searches the database
+    for all products they have personally left a star review on, retrieves those products,
+    and returns them alongside their global community rating statistics.
+    """
+    # Enforce that only logged-in users can fetch their review history.
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """
+        Handles incoming GET requests to fetch items reviewed by the current user.
+        """
+        # Query the database for Items, filtering by reviews authored by the requesting user.
+        # We annotate avg_rating and review_count to get aggregate stats for each gadget.
+        # We use .distinct() to guarantee no duplicate rows are returned.
+        queryset = Item.objects.filter(
+            reviews__author=request.user
+        ).annotate(
+            avg_rating=Avg('reviews__rating'),
+            review_count=Count('reviews')
+        ).distinct()
+
+        # Serialize the items using our ItemSerializer
+        serializer = ItemSerializer(queryset, many=True)
+
+        # Return the serialized data with a success status
+        return Response(serializer.data)

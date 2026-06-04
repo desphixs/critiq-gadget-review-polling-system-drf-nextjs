@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AuthForge Boilerplate",
-  description: "Secure Django and Next.js authentication boilerplate",
+  title: "critiq. | Gadget Review and Voting Platform",
+  description: "Browse tech gadgets, leave community reviews, and vote on helpful customer feedback.",
 };
 
 export default function RootLayout({
