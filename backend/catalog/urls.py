@@ -1,11 +1,15 @@
 from django.urls import path
 # Import the path function from django.urls to define URL routes.
-from .views import ItemListView
-# Import our ItemListView class to link it to the URL route.
+from .views import ItemListView, ReviewListView
+# Import our ItemListView and ReviewListView classes to link them to URL routes.
 
 # urlpatterns: A list mapping URL paths to view classes.
 urlpatterns = [
     # path('items/', ...): Maps GET requests targeting 'api/catalog/items/' to our ItemListView.
     # .as_view() is required because Django needs to translate our class-based view into a callable function.
     path('items/', ItemListView.as_view(), name='item-list'),
+    
+    # path('items/<int:item_id>/reviews/', ...): Maps GET requests targeting 'api/catalog/items/<item_id>/reviews/'
+    # to our ReviewListView. <int:item_id> captures the item ID from the URL and passes it as a parameter to the view.
+    path('items/<int:item_id>/reviews/', ReviewListView.as_view(), name='review-list'),
 ]
