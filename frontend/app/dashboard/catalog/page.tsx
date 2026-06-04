@@ -7,7 +7,7 @@ import Link from 'next/link';
 // Import our dashboard wrapper layout scaffolding
 import DashboardWrapper from '@/components/dashboard/DashboardWrapper';
 // Import modern, premium icons from the Lucide React library
-import { Star, Tag, DollarSign, Loader2, ShoppingBag } from 'lucide-react';
+import { Star, Tag, DollarSign, Loader2, ShoppingBag, Search } from 'lucide-react';
 // Import the server action to retrieve catalog gadgets from Django
 import { getItemsAction } from '@/app/actions/catalog';
 
@@ -38,6 +38,15 @@ export default function CatalogPage() {
     const [items, setItems] = useState<Item[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    // 2. Track the active search query to filter gadgets dynamically
+    const [searchQuery, setSearchQuery] = useState<string>('');
+
+    // 3. Derived state: Filter the items based on the search query
+    const filteredItems = items.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     // 2. Fetch the gadgets on page mount
     useEffect(() => {
@@ -69,13 +78,31 @@ export default function CatalogPage() {
             <div className="space-y-8 animate-in fade-in duration-300">
                 
                 {/* Page Heading Section */}
-                <div>
-                    <h1 className="text-3xl font-black tracking-tight text-zinc-950 dark:text-white">
-                        Browse Gadgets
-                    </h1>
-                    <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                        Explore our curated tech catalog, read community reviews, and check average star ratings.
-                    </p>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-black tracking-tight text-zinc-950 dark:text-white">
+                            Browse Gadgets
+                        </h1>
+                        <p className="mt-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                            Explore our curated tech catalog, read community reviews, and check average star ratings.
+                        </p>
+                    </div>
+
+                    {/* Search Input Bar */}
+                    {!isLoading && items.length > 0 && (
+                        <div className="relative max-w-xs w-full">
+                            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
+                                <Search className="h-4 w-4 text-zinc-400 dark:text-zinc-500" />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search gadgets, brands..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-xs font-semibold placeholder-zinc-400 dark:placeholder-zinc-650 focus:outline-none focus:ring-1.5 focus:ring-zinc-950 dark:focus:ring-white transition-all shadow-sm"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Error Banner Alert */}
@@ -102,10 +129,19 @@ export default function CatalogPage() {
                             No tech products have been added to the database yet. Create some items in the Django admin panel to start.
                         </p>
                     </div>
+                ) : filteredItems.length === 0 ? (
+                    // Empty Search Results Display
+                    <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl p-8 bg-zinc-50/20 dark:bg-zinc-900/10 animate-in fade-in duration-200">
+                        <Search className="w-12 h-12 text-zinc-400 dark:text-zinc-600 mb-4" />
+                        <h3 className="text-lg font-bold text-zinc-900 dark:text-white">No Results Found</h3>
+                        <p className="text-xs text-zinc-500 max-w-sm mt-1">
+                            We couldn't find any gadgets matching "{searchQuery}". Try searching for a different brand or category.
+                        </p>
+                    </div>
                 ) : (
                     // Catalog Grid Layout
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {items.map((item) => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {filteredItems.map((item) => (
                             <div 
                                 key={item.id} 
                                 className="group flex flex-col justify-between overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60 rounded-3xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
