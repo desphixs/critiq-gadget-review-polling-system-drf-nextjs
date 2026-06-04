@@ -2,6 +2,8 @@
 
 // Import React hooks for client state and side effects
 import React, { useState, useEffect } from 'react';
+// Import Link component for client-side navigation
+import Link from 'next/link';
 // Import our dashboard wrapper layout scaffolding
 import DashboardWrapper from '@/components/dashboard/DashboardWrapper';
 // Import modern, premium icons from the Lucide React library
@@ -163,12 +165,12 @@ export default function CatalogPage() {
 
                                 {/* Action Buttons Footer */}
                                 <div className="px-6 pb-6 pt-0">
-                                    <button 
-                                        onClick={() => {}}
+                                    <Link 
+                                        href={`/dashboard/catalog/${item.id}`}
                                         className="w-full py-3 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/50 dark:hover:bg-zinc-800 border border-zinc-200/50 dark:border-zinc-800 text-zinc-900 dark:text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center cursor-pointer shadow-sm"
                                     >
                                         View Reviews
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         ))}
